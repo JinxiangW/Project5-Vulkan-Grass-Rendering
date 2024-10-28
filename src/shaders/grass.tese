@@ -33,7 +33,7 @@ void main() {
     // bezier
     vec3 p0 = mix(v0, v1, v);
     vec3 p1 = mix(v1, v2, v);
-    vec3 p = mix(p0, p1, u);
+    vec3 p = mix(p0, p1, v);
 
     // bitangent
     vec3 t1 = vec3(sin(orient), 0, cos(orient));
