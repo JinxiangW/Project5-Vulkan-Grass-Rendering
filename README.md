@@ -49,7 +49,8 @@ In **distance culling**, we calculate distance between camera, and decide whethe
 
 ## Tessellation
 
-A **distance based tessellation** is performed in this project. By using similar concept introduced in Distance Culling, we lerp between preset min and max edge factors.
+A **distance based tessellation** is performed in this project. By using similar concept introduced in Distance Culling, we lerp between preset min and max edge factors.  
+
 ![](results/QuadLevels.png)
 
 ### Developing progress
