@@ -8,8 +8,8 @@
 #include "Camera.h"
 #include "BufferUtils.h"
 
-int WIDTH = 1280;
-int HEIGHT = 1280;
+int WIDTH = 960;
+int HEIGHT = 960;
 
 Camera::Camera(Device* device, float aspectRatio) : device(device) {
     r = 10.0f;

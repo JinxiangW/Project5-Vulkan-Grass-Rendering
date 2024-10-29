@@ -3,10 +3,11 @@
 
 #define WORKGROUP_SIZE 32
 
-#define THRES_ORIENT 0.1
+#define THRES_ORIENT 0.4
 #define THRES_VIEWFRUST 1.0
 #define DISTANCE_N 30
-#define DISTANCE_MAX 5.0
+#define DISTANCE_MIN 4.0
+#define DISTANCE_FADE 50.0
 
 layout(local_size_x = WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1) in;
 
@@ -76,9 +77,9 @@ void main() {
     vec3 up = vec3(blade.up);
 
     float ori   = blade.v0.w;
-    float h     =      blade.v1.w;
-    float w     =       blade.v2.w;
-    float stiff =   blade.up.w;
+    float h     = blade.v1.w;
+    float w     = blade.v2.w;
+    float stiff = blade.up.w;
 
     vec3 t1 = vec3(sin(ori), 0, cos(ori));
 
@@ -100,10 +101,10 @@ void main() {
     float fd = 1.0f - abs(dot(normalize(wi), normalize(v2 - v0)));
     float fr = dot(v2 - v0, up) / h;
     float theta = fd * fr;
-    vec3 wind = wi * theta;
+    vec3 wind = wi * theta * 2.0;
 
     // total force
-    vec3 tv2 = (g + r + w) * deltaTime;
+    vec3 tv2 = (g + r + wind) * deltaTime;
     v2 += tv2;
 
     // position correction
@@ -131,7 +132,9 @@ void main() {
 
     // orient culling
     vec3 dir_blade = t1; // vector along the width of the blade
-    vec3 dir_cull = vec3(normalize(camera.view * vec4(0, 0, 1, 0)));// view direction
+    vec3 dir_cull = (camera.view * vec4(0, 0, 1, 0)).xyz;// view direction
+    dir_cull.y = 0.0f;
+    dir_cull = normalize(dir_cull);
     if (abs(dot(dir_cull, dir_blade)) < THRES_ORIENT) {
         return;
     }
@@ -143,8 +146,8 @@ void main() {
 
     // distance culling
     vec3 c = vec3(inverse(camera.view) * vec4(0, 0, 0, 1)); // position of camera
-    float dproj = length(v0 - c);
-    if ((gl_GlobalInvocationID.x % DISTANCE_N) < floor(DISTANCE_N * (1.0f - dproj / DISTANCE_MAX))) {
+    float dist = length(v0 - c);
+    if ((gl_GlobalInvocationID.x % DISTANCE_N) < (DISTANCE_N * ((dist - DISTANCE_MIN) / DISTANCE_FADE))) {
         return;
     }
 
