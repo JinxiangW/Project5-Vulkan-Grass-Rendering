@@ -1,12 +1,34 @@
-Vulkan Grass Rendering
-==================================
+# Vulkan Grass Rendering
 
 **University of Pennsylvania, CIS 565: GPU Programming and Architecture, Project 5**
 
-* (TODO) YOUR NAME HERE
-* Tested on: (TODO) Windows 22, i7-2222 @ 2.22GHz 22GB, GTX 222 222MB (Moore 2222 Lab)
+-   Jinxiang Wang
+-   Tested on: Windows 11, AMD Ryzen 9 8945HS w/ Radeon 780M Graphics 4.00 GHz 32GB, RTX 4070 Laptop 8 GB
 
-### (TODO: Your README)
+### Features Implemented:
 
-*DO NOT* leave the README to the last minute! It is a crucial part of the
-project, and we will not be able to grade you without a good README.
+1. Vulkan grass render pipeline
+2. Force simulation (gravity, recovery, wind)
+3. Culling (orientation, view-frustum, distance)
+4. Grass blade tessellation
+
+### Developing progress
+
+| Setup and Bind Resources   | Fixed Orientation       | Add Forces and Culling |
+| -------------------------- | ----------------------- | ---------------------- |
+| ![](results/showgrass.png) | ![](results/bugfix.png) | ![](results/final.png) |
+
+### Performance Analysis
+
+Scene Spec:
+
+| Resolution | Num Blades       |
+| ---------- | ---------------- |
+| 1080x1080  | 262144 (1 << 18) |
+
+Results:
+
+|              | No Culling | Orientation Culling | View Frustum Culling | Distance Culling |
+| ------------ | ---------- | ------------------- | -------------------- | ---------------- |
+| FPS          | 112        | 136                 | 184                  | 189              |
+| FPS Increase | 0          | 24                  | 48                   | 5                |

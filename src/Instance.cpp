@@ -3,15 +3,17 @@
 #include <vector>
 #include "Instance.h"
 
-#ifdef NDEBUG
-const bool ENABLE_VALIDATION = false;
-#else
+//#ifdef NDEBUG
+//const bool ENABLE_VALIDATION = false;
+//#else
+//const bool ENABLE_VALIDATION = true;
+//#endif
 const bool ENABLE_VALIDATION = true;
-#endif
 
 namespace {
     const std::vector<const char*> validationLayers = {
-        "VK_LAYER_KHRONOS_validation"
+        "VK_LAYER_KHRONOS_validation",
+        "VK_LAYER_LUNARG_monitor"
     };
 
     // Get the required list of extensions based on whether validation layers are enabled

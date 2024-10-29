@@ -5,7 +5,7 @@
 
 #define THRES_ORIENT 0.1
 #define THRES_VIEWFRUST 1.0
-#define DISTANCE_N 42
+#define DISTANCE_N 30
 #define DISTANCE_MAX 5.0
 
 layout(local_size_x = WORKGROUP_SIZE, local_size_y = 1, local_size_z = 1) in;
@@ -143,7 +143,7 @@ void main() {
 
     // distance culling
     vec3 c = vec3(inverse(camera.view) * vec4(0, 0, 0, 1)); // position of camera
-    float dproj = length(v0 - c - up * (v0 - c) * up);
+    float dproj = length(v0 - c);
     if ((gl_GlobalInvocationID.x % DISTANCE_N) < floor(DISTANCE_N * (1.0f - dproj / DISTANCE_MAX))) {
         return;
     }

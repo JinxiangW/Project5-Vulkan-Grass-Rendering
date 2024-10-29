@@ -3,6 +3,7 @@
 #include "Instance.h"
 #include "Device.h"
 #include "Window.h"
+#include "Camera.h"
 
 namespace {
   // Specify the color channel format and color space type
@@ -75,6 +76,7 @@ SwapChain::SwapChain(Device* device, VkSurfaceKHR vkSurface, unsigned int numBuf
 }
 
 void SwapChain::Create(int w, int h) {
+
     auto* instance = device->GetInstance();
 
     const auto& surfaceCapabilities = instance->GetSurfaceCapabilities();
@@ -85,7 +87,12 @@ void SwapChain::Create(int w, int h) {
     VkExtent2D extent{ w, h };
 	if (extent.width == 0 || extent.height == 0) {
 		extent = chooseSwapExtent(surfaceCapabilities, GetGLFWWindow());
-	}
+    }
+    else
+    {
+        WIDTH = w;
+        HEIGHT = h;
+    }
 
     uint32_t imageCount = surfaceCapabilities.minImageCount + 1;
     imageCount = numBuffers > imageCount ? numBuffers : imageCount;
