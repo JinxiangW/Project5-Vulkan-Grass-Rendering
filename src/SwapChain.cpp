@@ -63,7 +63,7 @@ namespace {
 SwapChain::SwapChain(Device* device, VkSurfaceKHR vkSurface, unsigned int numBuffers)
   : device(device), vkSurface(vkSurface), numBuffers(numBuffers) {
     
-    Create();
+    Create(0, 0);
 
     VkSemaphoreCreateInfo semaphoreInfo = {};
     semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
@@ -74,14 +74,18 @@ SwapChain::SwapChain(Device* device, VkSurfaceKHR vkSurface, unsigned int numBuf
     }
 }
 
-void SwapChain::Create() {
+void SwapChain::Create(int w, int h) {
     auto* instance = device->GetInstance();
 
     const auto& surfaceCapabilities = instance->GetSurfaceCapabilities();
 
     VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(instance->GetSurfaceFormats());
     VkPresentModeKHR presentMode = chooseSwapPresentMode(instance->GetPresentModes());
-    VkExtent2D extent = chooseSwapExtent(surfaceCapabilities, GetGLFWWindow());
+    //VkExtent2D extent = chooseSwapExtent(surfaceCapabilities, GetGLFWWindow());
+    VkExtent2D extent{ w, h };
+	if (extent.width == 0 || extent.height == 0) {
+		extent = chooseSwapExtent(surfaceCapabilities, GetGLFWWindow());
+	}
 
     uint32_t imageCount = surfaceCapabilities.minImageCount + 1;
     imageCount = numBuffers > imageCount ? numBuffers : imageCount;
@@ -188,9 +192,9 @@ VkSemaphore SwapChain::GetRenderFinishedVkSemaphore() const {
     return renderFinishedSemaphore;
 }
 
-void SwapChain::Recreate() {
+void SwapChain::Recreate(int w, int h) {
     Destroy();
-    Create();
+    Create(w, h);
 }
 
 bool SwapChain::Acquire() {
@@ -204,7 +208,7 @@ bool SwapChain::Acquire() {
     }
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-        Recreate();
+        Recreate(0, 0);
         return false;
     }
 
@@ -233,7 +237,7 @@ bool SwapChain::Present() {
     }
 
     if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR) {
-        Recreate();
+        Recreate(0, 0);
         return false;
     }
 
